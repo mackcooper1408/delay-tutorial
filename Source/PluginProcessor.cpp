@@ -94,6 +94,16 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // initialisation that you need..
     params.prepareToPlay(sampleRate);
     params.reset();
+    
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = juce::uint32(samplesPerBlock);
+    spec.numChannels = 2;
+    delayLine.prepare(spec);
+    
+    int maxDelayInSamples = int(std::ceil(Parameters::maxDelayTime / 1000.0 * sampleRate));
+    delayLine.setMaximumDelayInSamples(maxDelayInSamples);
+    delayLine.reset();
 }
 
 void DelayAudioProcessor::releaseResources()
