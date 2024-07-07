@@ -62,13 +62,14 @@
     </LAYOUT>
   </FILTER>
   <FILTER uid="5" x="0.5525" y="0.4036885245901639" useARA="0" uiLastX_Normal="441"
-          uiLastY_Normal="213" uiopen_Normal="0">
+          uiLastY_Normal="213" uiopen_Normal="0" uiLastX_Generic="431"
+          uiLastY_Generic="80" uiopen_Generic="0">
     <PLUGIN name="Delay" format="VST3" category="Fx" manufacturer="yourcompany"
             version="1.0.0" file="/Users/mackcooper/Library/Audio/Plug-Ins/VST3/Delay.vst3"
-            uniqueId="ff64e31d" isInstrument="0" fileTime="190316244c0" infoUpdateTime="190316d79e5"
+            uniqueId="ff64e31d" isInstrument="0" fileTime="190316244c0" infoUpdateTime="19077271027"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="acfa29a6"/>
-    <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
+    <STATE>347.VMjLgHU....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DyM13hUMoFSmImQt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSPUDahcFLVkkdUwlX4QyPOAUQpQUPvPDRuEkUOglXVg0azvFRlg0UXIWUWkENHI0RxLiPNkGQowjclkWS1Q0TNYGRSwDZ2f1S2biPTcVRWg0bUYzXqkjLhkiKt3hKt3hKt3hKt3haTU0PUQDU3sFaicVTWkEQEYzXmEDTtDDRTQlcEEiX4EDTtDDSt3xXt3hKt3hKt3hKlIUUMQUTPkzUZESQFM1ZQQEV5UjQ77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
@@ -82,10 +83,10 @@
           uiLastY_Normal="362" uiopen_Normal="0">
     <PLUGIN name="AUAudioFilePlayer" format="AudioUnit" category="Generator"
             manufacturer="Apple" version="1.6.0" file="AudioUnit:Generators/augn,afpl,appl"
-            uniqueId="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="190316d79e6"
+            uniqueId="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="19077271027"
             numInputs="0" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="6163676e"/>
-    <STATE>556.hAGaoMGcv.C1AHv.DTfAGfPBJr.Gc3wGgvUag4VclE1XzUmbkIGUjEFcg8EDarVPUAkbkMWYzAUYxMWZyQWYtQ2TzEFcksTY4c0b0IFc4AWYWYWYxMWZu4FUzkGbk8EDOXVZrUVKxUlYkIWYtMVYyQkag0VYRDFbvwFPgxvzM3vCPDwEXYTZrUlSg0VYWIUYmk1atMmWIM2TkwVYiQWYjYTZrU1WP3yKUMWYxM2KsE1XqM1auAWYx8xYkQGco41YsLGcgIGckQVKh81aq0RagklauHUYy8VcxMVYy8xTo4VYtbWX1EpDTOAEUXwEXbgFdIUYmk1atQzakMGSu8FbZIUYmk1atQTXzE1WP.QRyMUYrU1XzUFYRU1Yo8laZIUYmk1at4TXsUVBOAAb...........3iDpPA....fHIgJT.....vM4xqE....v..........f3jKuV.....HN4xqE....P.....A.........................................P................p5Z.......jfVNU1cfHUYmk1atkfDgYFbrAA.RDVcm4Vzf.gUFkFakARLXUkazkFcrUFY.f..Y.fI.rB.IAPT.jE.dA.b.TG.5Avd.zG.DBPi.TI.jBP4.bN.vCv+AnP.cD.JAjR.bFPmAfZ.oFfqA.a.0F.tA7K.......f.A.........fH..................P.HC</STATE>
+    <STATE>556.hAGaoMGcv.C1AHv.DTfAGfPBJr.Gc3wGgvUag4VclE1XzUmbkIGUjEFcg8EDarVPUAkbkMWYzAUYxMWZyQWYtQ2TzEFcksTY4c0b0IFc4AWYWYWYxMWZu4FUzkGbk8EDOXVZrUVKxUlYkIWYtMVYyQkag0VYRDFbvwFPgxvzM3vCPDQFXYTZrUlSg0VYWIUYmk1atMmWIM2TkwVYiQWYjYTZrU1WP3yKUMWYxM2KsE1XqM1auAWYx8xYkQGco41YsLGcgIGckQVKh81aq0RagklauHUYy8VcxMVYy8xTo4VYtbWX1EpDTOAEUXwEXjQFZIUYmk1at4TXsUlVRU1Yo8laDEFcg8EDPjzbSUFakMFckQlTkcVZu4lWRU1Yo8laD8VYywzauAmVNU1cfHUYmk1at8DDvA..........fORnBE.....hjDpPA.....2jKuV.....C..........hSt7ZA....f3jKuV.....A....D..........................................A...............npqA......PBIjfDgYFbrAA.RDVcm4Vzf.gUFkFakARLXUkazkFcrUFY.f..Y.fI.rB.IAPT.jE.dA.b.TG.5Avd.zG.DBPi.TI.jBP4.bN.vCv9AXP.YD.JALS.lFvoAfZ.oFfqA.a.0F.tA7K.......f.A.........fH..................P.HC</STATE>
     <LAYOUT>
       <INPUTS/>
       <OUTPUTS>

@@ -11,13 +11,14 @@
 
 //==============================================================================
 DelayAudioProcessor::DelayAudioProcessor()
-     : AudioProcessor (BusesProperties()
-                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                       )
+    : AudioProcessor (
+                      BusesProperties()
+                        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+                        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+                      ),
+    params(apvts)
 {
-    auto* param = apvts.getParameter(gainParamId.getParamID());
-    gainParam = dynamic_cast<juce::AudioParameterFloat*>(param);
+    
 }
 
 DelayAudioProcessor::~DelayAudioProcessor()
@@ -129,8 +130,8 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     // interleaved by keeping the same state.
 //    buffer.applyGain(0.5f);
     
-    float gainInDecibels = gainParam->get();
-    float gain = juce::Decibels::decibelsToGain(gainInDecibels);
+    params.update();
+    float gain = params.gain;
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
@@ -177,17 +178,4 @@ void DelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new DelayAudioProcessor();
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout DelayAudioProcessor::createParameterLayout()
-{
-    juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    
-    layout.add(std::make_unique<juce::AudioParameterFloat>(
-       gainParamId,
-       "Output gain",
-       juce::NormalisableRange<float> {-12.0f, 12.0f},
-       0.0f));
-    
-    return layout;
 }
