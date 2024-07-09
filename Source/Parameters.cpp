@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    Parameters.cpp
-    Created: 5 Jul 2024 6:36:15pm
-    Author:  Mack Cooper
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ Parameters.cpp
+ Created: 5 Jul 2024 6:36:15pm
+ Author:  Mack Cooper
+ 
+ ==============================================================================
+ */
 
 #include "Parameters.h"
 
@@ -16,6 +16,24 @@ static void castParameter(juce::AudioProcessorValueTreeState& apvts, const juce:
     
     destination = dynamic_cast<T>(apvts.getParameter(id.getParamID()));
     jassert(destination);
+}
+
+static juce::String stringFromDecibels(float value, int)
+{
+    return juce::String(value, 1) + " db";
+}
+
+static juce::String stringFromMilliseconds(float value, int)
+{
+    if (value < 10.0f) {
+        return juce::String(value, 2) + " ms";
+    } else if (value < 100.0f) {
+        return juce::String(value, 1) + " ms";
+    } else if (value < 1000.0f) {
+        return juce::String(int(value)) + " ms";
+    } else {
+        return juce::String(value * 0.001f, 2) + " s";
+    }
 }
 
 Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
@@ -30,15 +48,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
     layout.add(std::make_unique<juce::AudioParameterFloat>(
-       gainParamId,
-       "Output gain",
-       juce::NormalisableRange<float> {-12.0f, 12.0f},
-       0.0f));
+                                                           gainParamId,
+                                                           "Output gain",
+                                                           juce::NormalisableRange<float> {-12.0f, 12.0f},
+                                                           0.0f,
+                                                           juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));
     layout.add(std::make_unique<juce::AudioParameterFloat>(
-       delayTimeParamId,
-       "Delay time",
-       juce::NormalisableRange<float> {minDelayTime, maxDelayTime},
-       100.0f));
+                                                           delayTimeParamId,
+                                                           "Delay time",
+                                                           juce::NormalisableRange<float> {minDelayTime, maxDelayTime, 0.001f, 0.25f},
+                                                           100.0f,
+                                                           juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromMilliseconds)));
     
     return layout;
 }
