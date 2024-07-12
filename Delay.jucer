@@ -6,13 +6,15 @@
     <GROUP id="{1EFBE1BF-DC09-891C-A136-95AE95009DC9}" name="Source">
       <FILE id="L18E6i" name="Parameters.cpp" compile="1" resource="0" file="Source/Parameters.cpp"/>
       <FILE id="Q9js96" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
+      <FILE id="nvOhi7" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="X1FOIU" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="mXPl0n" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="qJaEBo" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="nvOhi7" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="X1FOIU" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="ruATeU" name="RotaryKnob.cpp" compile="1" resource="0" file="Source/RotaryKnob.cpp"/>
+      <FILE id="E482sl" name="RotaryKnob.h" compile="0" resource="0" file="Source/RotaryKnob.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
