@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="0" jucerFormatVersion="1">
   <MAINGROUP id="INaf1q" name="Delay">
     <GROUP id="{1EFBE1BF-DC09-891C-A136-95AE95009DC9}" name="Source">
+      <FILE id="T50zfS" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+      <FILE id="ljJON3" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
       <FILE id="L18E6i" name="Parameters.cpp" compile="1" resource="0" file="Source/Parameters.cpp"/>
       <FILE id="Q9js96" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
       <FILE id="nvOhi7" name="PluginEditor.cpp" compile="1" resource="0"
