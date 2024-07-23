@@ -46,7 +46,7 @@ void DelayAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
 //    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    g.fillAll (juce::Colours::darkgrey);
+    g.fillAll (Colors::background);
 
 //    g.setColour (juce::Colours::white);
 //    g.setFont (40.0f);

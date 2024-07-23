@@ -10,12 +10,14 @@
 
 #include <JuceHeader.h>
 #include "RotaryKnob.h"
+#include "LookAndFeel.h"
 
     //==============================================================================
 RotaryKnob::RotaryKnob(const juce::String& text, juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& parameterId) : attachment(apvts, parameterId.getParamID(), slider)
 {
-        // In your constructor, you should add any child components, and
-        // initialise any special settings that your component needs.
+    float pi = juce::MathConstants<float>::pi;
+    slider.setRotaryParameters(1.25f * pi, 2.75 * pi, true);
+
     slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 70, 16);
     slider.setBounds(0, 0, 70, 86);
@@ -26,6 +28,8 @@ RotaryKnob::RotaryKnob(const juce::String& text, juce::AudioProcessorValueTreeSt
     label.setBorderSize(juce::BorderSize<int>(0));
     label.attachToComponent(&slider, false);
     addAndMakeVisible(label);
+    
+    setLookAndFeel(RotaryKnobLookAndFeel::get());
     
     setSize(70, 110);
 }
