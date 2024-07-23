@@ -3,6 +3,9 @@
 <JUCERPROJECT id="R0Qhzc" name="Delay" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="0" jucerFormatVersion="1">
   <MAINGROUP id="INaf1q" name="Delay">
+    <GROUP id="{D6785208-6864-89C4-0A43-C8F927809692}" name="Assets">
+      <FILE id="yxIC7W" name="Lato-Medium.ttf" compile="0" resource="1" file="../../getting-started-book-main/Resources/Lato-Medium.ttf"/>
+    </GROUP>
     <GROUP id="{1EFBE1BF-DC09-891C-A136-95AE95009DC9}" name="Source">
       <FILE id="T50zfS" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
       <FILE id="ljJON3" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
