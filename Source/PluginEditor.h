@@ -32,7 +32,7 @@ private:
     // access the processor object that created it.
     DelayAudioProcessor& audioProcessor;
     
-    RotaryKnob gainKnob { "Gain", audioProcessor.apvts, gainParamId };
+    RotaryKnob gainKnob { "Gain", audioProcessor.apvts, gainParamId, true };
     RotaryKnob mixKnob { "Mix", audioProcessor.apvts, mixParamId };
     RotaryKnob delayTimeKnob { "Time", audioProcessor.apvts, delayTimeParamId };
     
