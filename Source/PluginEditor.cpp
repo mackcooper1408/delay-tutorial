@@ -30,6 +30,8 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.addAndMakeVisible(gainKnob);
     addAndMakeVisible(outputGroup);
     
+    setLookAndFeel(&mainLF);
+    
     setSize (500, 330);
 
     // TODO: Make knobs resizable
@@ -39,6 +41,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
 
 DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
 {
+    setLookAndFeel(nullptr);
 }
 
 //==============================================================================
