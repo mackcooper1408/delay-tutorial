@@ -59,6 +59,7 @@ Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
     castParameter(apvts, gainParamId.getParamID(), gainParam);
     castParameter(apvts, delayTimeParamId.getParamID(), delayTimeParam);
     castParameter(apvts, mixParamId.getParamID(), mixParam);
+    castParameter(apvts, feedbackParamId.getParamID(), feedbackParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout()
@@ -85,6 +86,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                                                            juce::NormalisableRange<float> {0.0f, 100.0f, 1.0f},
                                                            100.0f,
                                                            juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(feedbackParamId,
+                                                           "Feedback",
+                                                           juce::NormalisableRange<float> {-100.0f, 100.0f, 1.0f},
+                                                           0.0f,
+                                                           juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
     
     return layout;
 }
@@ -94,6 +100,7 @@ void Parameters::prepareToPlay(double sampleRate) noexcept
     double duration = 0.02;
     gainSmoother.reset(sampleRate, duration);
     mixSmoother.reset(sampleRate, duration);
+    feedbackSmoother.reset(sampleRate, duration);
     
     coeff = 1.0f - std::exp(-1.0f / (0.2f * float(sampleRate)));
 }
@@ -103,15 +110,18 @@ void Parameters::reset() noexcept
     gain = 0.0f;
     delayTime = 0.0f;
     mix = 1.0f;
+    feedback = 0.0f;
     
     gainSmoother.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
     mixSmoother.setCurrentAndTargetValue(mixParam->get() * 0.01f);
+    feedbackSmoother.setCurrentAndTargetValue(feedbackParam->get() * 0.01f);
 }
 
 void Parameters::update() noexcept
 {
     gainSmoother.setTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
     mixSmoother.setTargetValue(mixParam->get() * 0.01f);
+    feedbackSmoother.setTargetValue(feedbackParam->get() * 0.01f);
     
     targetDelayTime = delayTimeParam->get();
     if (targetDelayTime == 0.0f)
@@ -122,5 +132,6 @@ void Parameters::smoothen() noexcept
 {
     gain = gainSmoother.getNextValue();
     mix = mixSmoother.getNextValue();
+    feedback = feedbackSmoother.getNextValue();
     delayTime += (targetDelayTime - delayTime) * coeff;
 }
