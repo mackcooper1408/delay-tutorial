@@ -14,8 +14,11 @@ namespace BinaryData
     extern const char*   LatoMedium_ttf;
     const int            LatoMedium_ttfSize = 663564;
 
+    extern const char*   Noise_png;
+    const int            Noise_pngSize = 50409;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 2;
+    const int namedResourceListSize = 3;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

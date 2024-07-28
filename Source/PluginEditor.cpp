@@ -48,12 +48,21 @@ DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
 void DelayAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-//    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    g.fillAll (Colors::background);
-
-//    g.setColour (juce::Colours::white);
-//    g.setFont (40.0f);
-//    g.drawFittedText ("Hello World!!!", getLocalBounds(), juce::Justification::centred, 1);
+//    g.fillAll (Colors::background);
+    auto noise = juce::ImageCache::getFromMemory(BinaryData::Noise_png, BinaryData::Noise_pngSize);
+    auto fillType = juce::FillType(noise, juce::AffineTransform::scale(0.5f));
+    g.setFillType(fillType);
+    g.fillRect(getLocalBounds());
+    
+    auto rect = getLocalBounds().withHeight(40);
+    g.setColour(Colors::header);
+    g.fillRect(rect);
+    
+    auto image = juce::ImageCache::getFromMemory(BinaryData::Logo_png, BinaryData::Logo_pngSize);
+    
+    int destWidth = image.getWidth() / 2;
+    int destHeight = image.getHeight() / 2;
+    g.drawImage(image, getWidth() / 2 - destWidth / 2, 0, destWidth, destHeight, 0, 0, image.getWidth(), image.getHeight());
 }
 
 void DelayAudioProcessorEditor::resized()
@@ -62,8 +71,8 @@ void DelayAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
     
-    int y = 10;
-    int height = bounds.getHeight();
+    int y = 50;
+    int height = bounds.getHeight() - 60;
     
     delayGroup.setBounds(10, y, 110, height);
     outputGroup.setBounds(bounds.getWidth() - 160, y, 150, height);
