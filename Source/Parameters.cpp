@@ -9,6 +9,7 @@
  */
 
 #include "Parameters.h"
+#include "DSP.h"
 
 template<typename T>
 static void castParameter(juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& id, T& destination)
@@ -60,6 +61,7 @@ Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
     castParameter(apvts, delayTimeParamId.getParamID(), delayTimeParam);
     castParameter(apvts, mixParamId.getParamID(), mixParam);
     castParameter(apvts, feedbackParamId.getParamID(), feedbackParam);
+    castParameter(apvts, stereoParamId.getParamID(), stereoParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout()
@@ -91,6 +93,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                                                            juce::NormalisableRange<float> {-100.0f, 100.0f, 1.0f},
                                                            0.0f,
                                                            juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(stereoParamId,
+                                                           "Stereo",
+                                                           juce::NormalisableRange<float> {-100.0f, 100.0f, 1.0f},
+                                                           0.0f,
+                                                           juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
     
     return layout;
 }
@@ -101,6 +108,7 @@ void Parameters::prepareToPlay(double sampleRate) noexcept
     gainSmoother.reset(sampleRate, duration);
     mixSmoother.reset(sampleRate, duration);
     feedbackSmoother.reset(sampleRate, duration);
+    stereoSmoother.reset(sampleRate, duration);
     
     coeff = 1.0f - std::exp(-1.0f / (0.2f * float(sampleRate)));
 }
@@ -112,9 +120,13 @@ void Parameters::reset() noexcept
     mix = 1.0f;
     feedback = 0.0f;
     
+    panL = 0.0f;
+    panR = 0.0f;
+    
     gainSmoother.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
     mixSmoother.setCurrentAndTargetValue(mixParam->get() * 0.01f);
     feedbackSmoother.setCurrentAndTargetValue(feedbackParam->get() * 0.01f);
+    stereoSmoother.setCurrentAndTargetValue(stereoParam->get() * 0.01f);
 }
 
 void Parameters::update() noexcept
@@ -122,6 +134,7 @@ void Parameters::update() noexcept
     gainSmoother.setTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
     mixSmoother.setTargetValue(mixParam->get() * 0.01f);
     feedbackSmoother.setTargetValue(feedbackParam->get() * 0.01f);
+    stereoSmoother.setTargetValue(stereoParam->get() * 0.01f);
     
     targetDelayTime = delayTimeParam->get();
     if (targetDelayTime == 0.0f)
@@ -134,4 +147,6 @@ void Parameters::smoothen() noexcept
     mix = mixSmoother.getNextValue();
     feedback = feedbackSmoother.getNextValue();
     delayTime += (targetDelayTime - delayTime) * coeff;
+    
+    panningEqualPower(stereoSmoother.getNextValue(), panL, panR);
 }
