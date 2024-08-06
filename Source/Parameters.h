@@ -13,6 +13,8 @@
 #include <JuceHeader.h>
 
 const juce::ParameterID delayTimeParamId { "delayTime", 1 };
+const juce::ParameterID tempoSyncParamId { "tempoSync", 1 };
+const juce::ParameterID delayNoteParamId { "delayNote", 1 };
 const juce::ParameterID feedbackParamId { "feedback", 1 };
 const juce::ParameterID stereoParamId { "stereo", 1};
 const juce::ParameterID lowCutParamId { "lowCut", 1};
@@ -42,6 +44,9 @@ public:
     float panR = 0.0f;
     float lowCut = 20.0f;
     float highCut = 20000.0f;
+    
+    int delayNote = 0;
+    bool tempoSync = false;
 
     float mix = 1.0f;
     float gain = 0.0f;
@@ -49,6 +54,9 @@ private:
     juce::AudioParameterFloat* delayTimeParam;
     float targetDelayTime = 0.0f;
     float coeff = 0.0f;
+    
+    juce::AudioParameterBool* tempoSyncParam;
+    juce::AudioParameterChoice* delayNoteParam;
     
     juce::AudioParameterFloat* feedbackParam;
     juce::LinearSmoothedValue<float> feedbackSmoother;

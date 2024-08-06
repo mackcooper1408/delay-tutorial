@@ -41,6 +41,13 @@ private:
     RotaryKnob delayTimeKnob { "Time", audioProcessor.apvts, delayTimeParamId };
     RotaryKnob lowCutKnob { "Low Cut", audioProcessor.apvts, lowCutParamId };
     RotaryKnob highCutKnob { "High Cut", audioProcessor.apvts, highCutParamId };
+    RotaryKnob delayNoteKnob { "Note", audioProcessor.apvts, delayNoteParamId };
+    
+    juce::TextButton tempoSyncButton;
+    
+    juce::AudioProcessorValueTreeState::ButtonAttachment tempoSyncAttachment {
+        audioProcessor.apvts, tempoSyncParamId.getParamID(), tempoSyncButton
+    };
     
     juce::GroupComponent delayGroup, feedbackGroup, outputGroup;
 
