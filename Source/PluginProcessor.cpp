@@ -19,7 +19,8 @@ DelayAudioProcessor::DelayAudioProcessor()
                       ),
     params(apvts)
 {
-    
+    lowCutFilter.setType(juce::dsp::StateVariableTPTFilterType::highpass);
+    highCutFilter.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
 }
 
 DelayAudioProcessor::~DelayAudioProcessor()
@@ -106,6 +107,12 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     delayLine.setMaximumDelayInSamples(maxDelayInSamples);
     delayLine.reset();
     
+    lowCutFilter.prepare(spec);
+    lowCutFilter.reset();
+    
+    highCutFilter.prepare(spec);
+    highCutFilter.reset();
+    
     feedbackL = 0.0f;
     feedbackR = 0.0f;
 }
@@ -146,14 +153,6 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-//    buffer.applyGain(0.5f);
     
     params.update();
     
@@ -178,6 +177,9 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
             float delayInSamples = params.delayTime / 1000.0f * sampleRate;
             delayLine.setDelay(delayInSamples);
             
+            lowCutFilter.setCutoffFrequency(params.lowCut);
+            highCutFilter.setCutoffFrequency(params.highCut);
+            
             float dryL = inputDataL[sample];
             float dryR = inputDataR[sample];
             
@@ -190,7 +192,12 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
             float wetR = delayLine.popSample(1);
             
             feedbackL = wetL * params.feedback;
+            feedbackL = lowCutFilter.processSample(0, feedbackL);
+            feedbackL = highCutFilter.processSample(0, feedbackL);
+
             feedbackR = wetR * params.feedback;
+            feedbackR = lowCutFilter.processSample(1, feedbackR);
+            feedbackR = highCutFilter.processSample(1, feedbackR);
             
             float mixL = dryL + (wetL * params.mix);
             float mixR = dryR + (wetR * params.mix);
