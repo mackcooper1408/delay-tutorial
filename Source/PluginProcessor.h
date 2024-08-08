@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "Parameters.h"
+#include "Tempo.h"
 
 //==============================================================================
 /**
@@ -68,6 +69,8 @@ private:
     juce::dsp::StateVariableTPTFilter<float> highCutFilter;
     float lastLowCut = -1.0f;
     float lastHighCut = -1.0f;
+    
+    Tempo tempo;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)
