@@ -50,12 +50,13 @@ public:
 
     float mix = 1.0f;
     float gain = 0.0f;
+
+    juce::AudioParameterBool* tempoSyncParam;
 private:
     juce::AudioParameterFloat* delayTimeParam;
     float targetDelayTime = 0.0f;
     float coeff = 0.0f;
     
-    juce::AudioParameterBool* tempoSyncParam;
     juce::AudioParameterChoice* delayNoteParam;
     
     juce::AudioParameterFloat* feedbackParam;
