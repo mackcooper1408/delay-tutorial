@@ -9,6 +9,8 @@
       <FILE id="zjtAHK" name="Noise.png" compile="0" resource="1" file="../../getting-started-book-main/Resources/Noise.png"/>
     </GROUP>
     <GROUP id="{1EFBE1BF-DC09-891C-A136-95AE95009DC9}" name="Source">
+      <FILE id="EuWvVU" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
+      <FILE id="Vuoipd" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
       <FILE id="hF4jQz" name="DSP.h" compile="0" resource="0" file="Source/DSP.h"/>
       <FILE id="T50zfS" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
       <FILE id="ljJON3" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
