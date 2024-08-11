@@ -11,7 +11,7 @@
 
 //==============================================================================
 DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+: AudioProcessorEditor (&p), audioProcessor (p), meter(p.levelL, p.levelR)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -40,6 +40,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     outputGroup.addAndMakeVisible(mixKnob);
     outputGroup.addAndMakeVisible(gainKnob);
+    outputGroup.addAndMakeVisible(meter);
     addAndMakeVisible(outputGroup);
     
     setLookAndFeel(&mainLF);
@@ -104,6 +105,8 @@ void DelayAudioProcessorEditor::resized()
     lowCutKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() + 10);
     highCutKnob.setTopLeftPosition(lowCutKnob.getRight() + 20, lowCutKnob.getY());
     gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);
+    
+    meter.setBounds(outputGroup.getWidth() - 45, 30, 30, gainKnob.getBottom() - 30);
 }
 
 void DelayAudioProcessorEditor::parameterValueChanged(int, float value)
@@ -115,7 +118,7 @@ void DelayAudioProcessorEditor::parameterValueChanged(int, float value)
             updateDelayKnobs(value != 0.0f);
         });
     }
-    DBG("parameter changed: " << value);
+//    DBG("parameter changed: " << value);
 }
 
 void DelayAudioProcessorEditor::updateDelayKnobs(bool tempoSyncActive)
