@@ -217,7 +217,8 @@ void Parameters::smoothen() noexcept
     gain = gainSmoother.getNextValue();
     mix = mixSmoother.getNextValue();
     feedback = feedbackSmoother.getNextValue();
-    delayTime += (targetDelayTime - delayTime) * coeff;
+//    delayTime += (targetDelayTime - delayTime) * coeff;
+    delayTime = targetDelayTime; // no smoothing
     
     panningEqualPower(stereoSmoother.getNextValue(), panL, panR);
     
