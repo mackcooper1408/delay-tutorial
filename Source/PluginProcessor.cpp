@@ -113,8 +113,17 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     delayInSamples = 0.0f;
     targetDelay = 0.0f;
-    xfade = 0.0f;
-    xfadeInc = static_cast<float>(1.0 / (0.05 * sampleRate)); // 50 ms
+    
+//  For ducking the delay time
+    fade = 1.0f;
+    fadeTarget = 1.0f;
+    coeff = 1.0f - std::exp(-1.0f / (0.05f * float(sampleRate)));
+    wait = 0.0f;
+    waitInc = 1.0f / (0.3f * float(sampleRate)); // 300 ms
+    
+//  For xfading the delay time
+//    xfade = 0.0f;
+//    xfadeInc = static_cast<float>(1.0 / (0.05 * sampleRate)); // 50 ms
     
     lowCutFilter.prepare(spec);
     lowCutFilter.reset();
@@ -198,16 +207,34 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
             params.smoothen();
             
-            if (xfade == 0.0f) {
-                float delayTime = params.tempoSync ? syncedTime : params.delayTime;
-                targetDelay = delayTime / 1000.0f * sampleRate;
+//          Ducking for delay time
+            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+            float newTargetDelay = delayTime / 1000.0f * sampleRate;
+            
+            if (newTargetDelay != targetDelay) {
+                targetDelay = newTargetDelay;
                 
-                if (delayInSamples == 0.0f) { // first time
+                if (delayInSamples == 0.0f) {
                     delayInSamples = targetDelay;
-                } else if (targetDelay != delayInSamples) { // start crossfade
-                    xfade = xfadeInc;
+                } else {
+                    wait = waitInc;
+                    fadeTarget = 0.0f;
                 }
             }
+            
+//            xfade delay time
+//            if (xfade == 0.0f) {
+//                float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+//                targetDelay = delayTime / 1000.0f * sampleRate;
+//                
+//                if (delayInSamples == 0.0f) { // first time
+//                    delayInSamples = targetDelay;
+//                } else if (targetDelay != delayInSamples) { // start crossfade
+//                    xfade = xfadeInc;
+//                }
+//            }
+
+//            Built in Juce DelayLine
 //            delayLine.setDelay(delayInSamples);
             
             if (params.lowCut != lastLowCut) {
@@ -225,30 +252,48 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
             
             float mono = (dryL + dryR) * 0.5f;
             
+//            Juce built in delayLine
 //            delayLine.pushSample(0, mono * params.panL + feedbackR);
 //            delayLine.pushSample(1, mono * params.panR + feedbackL);
             delayLineL.write(mono * params.panL + feedbackR);
             delayLineR.write(mono * params.panR + feedbackL);
             
+//            Juce Built in delayLine
 //            float wetL = delayLine.popSample(0);
 //            float wetR = delayLine.popSample(1);
             float wetL = delayLineL.read(delayInSamples);
             float wetR = delayLineR.read(delayInSamples);
             
-            if (xfade > 0.0f) {
-                float newL = delayLineL.read(targetDelay);
-                float newR = delayLineR.read(targetDelay);
-                
-                wetL = (1 - xfade) * wetL + xfade * newL;
-                wetR = (1 - xfade) * wetR + xfade * newR;
-                
-                xfade += xfadeInc;
-                
-                if (xfade >= 1.0f) {
+//            Handle ducking for delay time
+            fade += (fadeTarget - fade) * coeff;
+            
+            wetL *= fade;
+            wetR *= fade;
+            
+            if (wait > 0.0f) {
+                wait += waitInc;
+                if (wait >= 1.0f) {
                     delayInSamples = targetDelay;
-                    xfade = 0.0f;
+                    wait = 0.0f;
+                    fadeTarget = 1.0f;
                 }
             }
+            
+//            Handle cross fade for delay time
+//            if (xfade > 0.0f) {
+//                float newL = delayLineL.read(targetDelay);
+//                float newR = delayLineR.read(targetDelay);
+//                
+//                wetL = (1 - xfade) * wetL + xfade * newL;
+//                wetR = (1 - xfade) * wetR + xfade * newR;
+//                
+//                xfade += xfadeInc;
+//                
+//                if (xfade >= 1.0f) {
+//                    delayInSamples = targetDelay;
+//                    xfade = 0.0f;
+//                }
+//            }
             
             feedbackL = wetL * params.feedback;
             feedbackL = lowCutFilter.processSample(0, feedbackL);
