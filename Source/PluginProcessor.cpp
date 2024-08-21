@@ -103,7 +103,6 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = juce::uint32(samplesPerBlock);
     spec.numChannels = 2;
-//    delayLine.prepare(spec);
     
     int maxDelayInSamples = int(std::ceil(Parameters::maxDelayTime / 1000.0 * sampleRate));
     delayLineL.setMaximumDelayInSamples(maxDelayInSamples);
@@ -203,151 +202,117 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     float maxL = 0.0f;
     float maxR = 0.0f;
     
-    if (isMainOutputStereo) {
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
-            params.smoothen();
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
+        params.smoothen();
+        
+//      Ducking for delay time
+        float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+        float newTargetDelay = delayTime / 1000.0f * sampleRate;
+        
+        if (newTargetDelay != targetDelay) {
+            targetDelay = newTargetDelay;
             
-//          Ducking for delay time
-            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
-            float newTargetDelay = delayTime / 1000.0f * sampleRate;
-            
-            if (newTargetDelay != targetDelay) {
-                targetDelay = newTargetDelay;
-                
-                if (delayInSamples == 0.0f) {
-                    delayInSamples = targetDelay;
-                } else {
-                    wait = waitInc;
-                    fadeTarget = 0.0f;
-                }
+            if (delayInSamples == 0.0f) {
+                delayInSamples = targetDelay;
+            } else {
+                wait = waitInc;
+                fadeTarget = 0.0f;
             }
-            
-//            xfade delay time
-//            if (xfade == 0.0f) {
-//                float delayTime = params.tempoSync ? syncedTime : params.delayTime;
-//                targetDelay = delayTime / 1000.0f * sampleRate;
-//                
-//                if (delayInSamples == 0.0f) { // first time
-//                    delayInSamples = targetDelay;
-//                } else if (targetDelay != delayInSamples) { // start crossfade
-//                    xfade = xfadeInc;
-//                }
+        }
+        
+//        xfade delay time
+//        if (xfade == 0.0f) {
+//            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+//            targetDelay = delayTime / 1000.0f * sampleRate;
+//
+//            if (delayInSamples == 0.0f) { // first time
+//                delayInSamples = targetDelay;
+//            } else if (targetDelay != delayInSamples) { // start crossfade
+//                xfade = xfadeInc;
 //            }
-
-//            Built in Juce DelayLine
-//            delayLine.setDelay(delayInSamples);
-            
-            if (params.lowCut != lastLowCut) {
-                lowCutFilter.setCutoffFrequency(params.lowCut);
-                lastLowCut = params.lowCut;
-            }
-            
-            if (params.highCut != lastHighCut) {
-                highCutFilter.setCutoffFrequency(params.highCut);
-                lastHighCut = params.highCut;
-            }
-            
-            float dryL = inputDataL[sample];
-            float dryR = inputDataR[sample];
-            
-            float mono = (dryL + dryR) * 0.5f;
-            
-//            Juce built in delayLine
-//            delayLine.pushSample(0, mono * params.panL + feedbackR);
-//            delayLine.pushSample(1, mono * params.panR + feedbackL);
+//        }
+        
+        if (params.lowCut != lastLowCut) {
+            lowCutFilter.setCutoffFrequency(params.lowCut);
+            lastLowCut = params.lowCut;
+        }
+        
+        if (params.highCut != lastHighCut) {
+            highCutFilter.setCutoffFrequency(params.highCut);
+            lastHighCut = params.highCut;
+        }
+        
+        float dryL = inputDataL[sample];
+        float dryR = inputDataR[sample];
+        
+        float mono = (dryL + dryR) * 0.5f;
+        
+        if (isMainOutputStereo) {
             delayLineL.write(mono * params.panL + feedbackR);
             delayLineR.write(mono * params.panR + feedbackL);
-            
-//            Juce Built in delayLine
-//            float wetL = delayLine.popSample(0);
-//            float wetR = delayLine.popSample(1);
-            float wetL = delayLineL.read(delayInSamples);
-            float wetR = delayLineR.read(delayInSamples);
-            
-//            Handle ducking for delay time
-            fade += (fadeTarget - fade) * coeff;
-            
-            wetL *= fade;
-            wetR *= fade;
-            
-            if (wait > 0.0f) {
-                wait += waitInc;
-                if (wait >= 1.0f) {
-                    delayInSamples = targetDelay;
-                    wait = 0.0f;
-                    fadeTarget = 1.0f;
-                }
+        } else {
+            delayLineL.write(mono + feedbackR);
+            delayLineR.write(mono + feedbackL);
+        }
+        
+        float wetL = delayLineL.read(delayInSamples);
+        float wetR = delayLineR.read(delayInSamples);
+        
+//      Handle ducking for delay time
+        fade += (fadeTarget - fade) * coeff;
+        
+        wetL *= fade;
+        wetR *= fade;
+        
+        if (wait > 0.0f) {
+            wait += waitInc;
+            if (wait >= 1.0f) {
+                delayInSamples = targetDelay;
+                wait = 0.0f;
+                fadeTarget = 1.0f;
             }
-            
-//            Handle cross fade for delay time
-//            if (xfade > 0.0f) {
-//                float newL = delayLineL.read(targetDelay);
-//                float newR = delayLineR.read(targetDelay);
-//                
-//                wetL = (1 - xfade) * wetL + xfade * newL;
-//                wetR = (1 - xfade) * wetR + xfade * newR;
-//                
-//                xfade += xfadeInc;
-//                
-//                if (xfade >= 1.0f) {
-//                    delayInSamples = targetDelay;
-//                    xfade = 0.0f;
-//                }
+        }
+        
+//        Handle cross fade for delay time
+//        if (xfade > 0.0f) {
+//            float newL = delayLineL.read(targetDelay);
+//            float newR = delayLineR.read(targetDelay);
+//
+//            wetL = (1 - xfade) * wetL + xfade * newL;
+//            wetR = (1 - xfade) * wetR + xfade * newR;
+//
+//            xfade += xfadeInc;
+//
+//            if (xfade >= 1.0f) {
+//                delayInSamples = targetDelay;
+//                xfade = 0.0f;
 //            }
-            
-            feedbackL = wetL * params.feedback;
-            feedbackL = lowCutFilter.processSample(0, feedbackL);
-            feedbackL = highCutFilter.processSample(0, feedbackL);
+//        }
+        
+        feedbackL = wetL * params.feedback;
+        feedbackL = lowCutFilter.processSample(0, feedbackL);
+        feedbackL = highCutFilter.processSample(0, feedbackL);
 
-            feedbackR = wetR * params.feedback;
-            feedbackR = lowCutFilter.processSample(1, feedbackR);
-            feedbackR = highCutFilter.processSample(1, feedbackR);
-            
-            float mixL = dryL + (wetL * params.mix);
-            float mixR = dryR + (wetR * params.mix);
-            
-            float outL = mixL * params.gain;
-            float outR = mixR * params.gain;
-            
-            if (params.bypassed) {
-                outL = dryL;
-                outR = dryR;
-            }
-            
-            outputDataL[sample] = outL;
-            outputDataR[sample] = outR;
-            
-            maxL = std::max(maxL, std::abs(outL));
-            maxR = std::max(maxR, std::abs(outR));
+        feedbackR = wetR * params.feedback;
+        feedbackR = lowCutFilter.processSample(1, feedbackR);
+        feedbackR = highCutFilter.processSample(1, feedbackR);
+        
+        float mixL = dryL + (wetL * params.mix);
+        float mixR = dryR + (wetR * params.mix);
+        
+        float outL = mixL * params.gain;
+        float outR = mixR * params.gain;
+        
+        if (params.bypassed) {
+            outL = dryL;
+            outR = dryR;
         }
-    } else {
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
-            params.smoothen();
-            
-            float delayInSamples = params.delayTime / 1000.0f * sampleRate;
-//            delayLine.setDelay(delayInSamples);
-            
-            // TODO: add filters and Tempo Sync and xfade
-            
-            float dry = inputDataL[sample];
-//            delayLine.pushSample(0, dry + feedbackL);
-            delayLineL.write(dry + feedbackL);
-            
-//            float wet = delayLine.popSample(0);
-            float wet = delayLineL.read(delayInSamples);
-            feedbackL = wet * params.feedback;
-            
-            float mix = dry + (wet * params.mix);
-            float outL = mix * params.gain;
-            
-            if (params.bypassed) {
-                outL = dry;
-            }
-            
-            outputDataL[sample] = outL;
-            
-            maxL = std::max(maxL, std::abs(outL));
-        }
+        
+        outputDataL[sample] = outL;
+        outputDataR[sample] = outR;
+        
+        maxL = std::max(maxL, std::abs(outL));
+        maxR = std::max(maxR, std::abs(outR));
     }
     
     levelL.updateIfGreater(maxL);

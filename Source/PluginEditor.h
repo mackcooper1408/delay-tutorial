@@ -34,8 +34,6 @@ private:
     void parameterGestureChanged(int, bool) override { }
     void updateDelayKnobs(bool tempoSyncActive);
 
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     DelayAudioProcessor& audioProcessor;
     
     MainLookAndFeel mainLF;

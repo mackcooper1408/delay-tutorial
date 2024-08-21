@@ -13,8 +13,6 @@
 DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
 : AudioProcessorEditor (&p), audioProcessor (p), meter(p.levelL, p.levelR)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
     delayGroup.setText("Delay");
     delayGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     delayGroup.addAndMakeVisible(delayTimeKnob);
@@ -74,8 +72,6 @@ DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
 //==============================================================================
 void DelayAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-//    g.fillAll (Colors::background);
     auto noise = juce::ImageCache::getFromMemory(BinaryData::Noise_png, BinaryData::Noise_pngSize);
     auto fillType = juce::FillType(noise, juce::AffineTransform::scale(0.5f));
     g.setFillType(fillType);
@@ -94,8 +90,6 @@ void DelayAudioProcessorEditor::paint (juce::Graphics& g)
 
 void DelayAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
     auto bounds = getLocalBounds();
     
     int y = 50;
@@ -130,7 +124,6 @@ void DelayAudioProcessorEditor::parameterValueChanged(int, float value)
             updateDelayKnobs(value != 0.0f);
         });
     }
-//    DBG("parameter changed: " << value);
 }
 
 void DelayAudioProcessorEditor::updateDelayKnobs(bool tempoSyncActive)
