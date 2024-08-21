@@ -52,9 +52,13 @@ private:
     LevelMeter meter;
     
     juce::TextButton tempoSyncButton;
-    
     juce::AudioProcessorValueTreeState::ButtonAttachment tempoSyncAttachment {
         audioProcessor.apvts, tempoSyncParamId.getParamID(), tempoSyncButton
+    };
+    
+    juce::ImageButton bypassButton;
+    juce::AudioProcessorValueTreeState::ButtonAttachment bypassAttachment {
+        audioProcessor.apvts, bypassParamId.getParamID(), bypassButton
     };
     
     juce::GroupComponent delayGroup, feedbackGroup, outputGroup;

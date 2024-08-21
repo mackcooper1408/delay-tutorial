@@ -86,6 +86,7 @@ Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
     castParameter(apvts, stereoParamId.getParamID(), stereoParam);
     castParameter(apvts, lowCutParamId.getParamID(), lowCutParam);
     castParameter(apvts, highCutParamId.getParamID(), highCutParam);
+    castParameter(apvts, bypassParamId.getParamID(), bypassParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout()
@@ -158,6 +159,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     };
     layout.add(std::make_unique<juce::AudioParameterChoice>(delayNoteParamId, "Delay Note", noteLengths, 9));
     
+    layout.add(std::make_unique<juce::AudioParameterBool>(bypassParamId, "Bypass", false));
+    
     return layout;
 }
 
@@ -210,6 +213,8 @@ void Parameters::update() noexcept
     
     delayNote = delayNoteParam->getIndex();
     tempoSync = tempoSyncParam->get();
+    
+    bypassed = bypassParam->get();
 }
 
 void Parameters::smoothen() noexcept

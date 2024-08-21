@@ -309,6 +309,11 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
             float outL = mixL * params.gain;
             float outR = mixR * params.gain;
             
+            if (params.bypassed) {
+                outL = dryL;
+                outR = dryR;
+            }
+            
             outputDataL[sample] = outL;
             outputDataR[sample] = outR;
             
@@ -334,6 +339,10 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
             
             float mix = dry + (wet * params.mix);
             float outL = mix * params.gain;
+            
+            if (params.bypassed) {
+                outL = dry;
+            }
             
             outputDataL[sample] = outL;
             
@@ -377,6 +386,11 @@ void DelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes
     if (xml.get() != nullptr && xml->hasTagName(apvts.state.getType())) {
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
     }
+}
+
+juce::AudioProcessorParameter* DelayAudioProcessor::getBypassParameter() const
+{
+    return params.bypassParam;
 }
 
 //==============================================================================

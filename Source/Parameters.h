@@ -21,6 +21,7 @@ const juce::ParameterID lowCutParamId { "lowCut", 1};
 const juce::ParameterID highCutParamId { "highCut", 1};
 const juce::ParameterID mixParamId { "mix", 1 };
 const juce::ParameterID gainParamId { "gain", 1 };
+const juce::ParameterID bypassParamId { "bypass", 1 };
 
 class Parameters
 {
@@ -50,6 +51,9 @@ public:
 
     float mix = 1.0f;
     float gain = 0.0f;
+    
+    juce::AudioParameterBool* bypassParam;
+    bool bypassed = false;
 
     juce::AudioParameterBool* tempoSyncParam;
 private:
