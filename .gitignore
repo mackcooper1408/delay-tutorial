@@ -25,3 +25,5 @@ build/
 
 # Juce Builds
 Builds/
+**/Builds
+**/JuceLibraryCode
